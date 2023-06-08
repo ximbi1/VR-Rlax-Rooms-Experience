@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A-Frame Oculus Background Change</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+</head>
+
+<body>
+  <a-scene id="scene" keyboard-controls>
+    <!--keyboard-controls es opcional-->
+    <a-assets>
+      <!--FONDOS-->
+      <img id="bg1" src="fondos/1.jpg">
+      <img id="bg2" src="fondos/2.jpg">
+      <img id="bg3" src="fondos/3.jpg">
+      <img id="bg4" src="fondos/4.jpg">
+      <img id="bg5" src="fondos/5.jpg">
+      <img id="bg6" src="fondos/6.jpg">
+      <img id="bg7" src="fondos/7.jpg">
+      <img id="bg8" src="fondos/8.jpg">
+      <img id="bg9" src="fondos/9.jpg">
+      <img id="bg10" src="fondos/10.jpg">
+      <img id="bg11" src="fondos/11.jpg">
+      <img id="bg12" src="fondos/12.jpg">
+      <img id="bg13" src="fondos/13.jpg">
+      <img id="bg14" src="fondos/14.jpg">
+      <img id="bg15" src="fondos/15.jpg">
+      <img id="bg16" src="fondos/16.jpg">
+      <img id="bg17" src="fondos/17.jpg">
+      <img id="bg18" src="fondos/18.jpg">
+
+      <!--AUDIOS-->
+      <audio id="music1" src="audios/1.mp3"></audio>
+      <audio id="music2" src="audios/2.mp3"></audio>
+      <audio id="music3" src="audios/3.mp3"></audio>
+      <audio id="music4" src="audios/4.mp3"></audio>
+      <audio id="music5" src="audios/5.mp3"></audio>
+      <audio id="music6" src="audios/6.mp3"></audio>
+      <audio id="music7" src="audios/7.mp3"></audio>
+      <audio id="music8" src="audios/8.mp3"></audio>
+      <audio id="music9" src="audios/9.mp3"></audio>
+      <audio id="music10" src="audios/10.mp3"></audio>
+      <audio id="music11" src="audios/11.mp3"></audio>
+      <audio id="music12" src="audios/12.mp3"></audio>
+      <audio id="music13" src="audios/13.mp3"></audio>
+      <audio id="music14" src="audios/14.mp3"></audio>
+      <audio id="music15" src="audios/15.mp3"></audio>
+      <audio id="music16" src="audios/16.mp3"></audio>
+      <audio id="music17" src="audios/17.mp3"></audio>
+      <audio id="music18" src="audios/18.mp3"></audio>
+    </a-assets>
+
+    <a-sky id="sky" src="#bg1" animation="property: rotation; to: 0 360 0; dur: 1000000; loop: true; easing: linear">
+    </a-sky>
+
+    <a-entity id="cameraRig" position="0 1.6 0" movement-control></a-entity>
+    <a-entity id="camera" camera="userHeight: 0.6" look-controls wasd-controls>
+      <a-entity id="infoPanel" position="0 -0.2 -1" scale="0.5 0.5 0.5">
+        <!--
+        <a-text id="backgroundName" value="Fondo 1" align="center" position="0 0.1 0"></a-text>
+        <a-text id="musicName" value="Música 1" align="center" position="0 -0.1 0"></a-text>-->
+      </a-entity>
+    </a-entity>
+    <a-entity id="leftHand" oculus-touch-controls="hand: left">
+    
+    <!--esta parte es para ver el nombre de la cacnion y del fondo
+      <a-text id="backgroundName" value="Fondo 1" align="center" position="0 0.1 -0.2" scale="0.2 0.2 0.2"></a-text>
+      <a-text id="musicName" value="Música 1" align="center" position="0 -0.1 -0.2" scale="0.2 0.2 0.2" ></a-text> 
+      -->
+    <!--parte del boton para el audio
+      <a-box id="pauseButton" position="0 0.1 -0.2" scale="0.1 0.1 0.1" color="blue"></a-box> -->
+    </a-entity>
+    <a-entity id="rightHand" oculus-touch-controls="hand: right">
+      <a-text id="backgroundNumber" value="1" align="center" position="0 -0.1 -0.2" scale="0.5 0.5 0.5"></a-text>
+      
+    </a-entity>
+
+      <a-animation attribute="position" dur="2000" direction="alternate repeat="indefinite" to="0 0 -4"></a-animation>
+    </a-entity>
+
+
+    <a-entity id="audio" sound="src: #music1; autoplay: true; loop: true"></a-entity>
+  </a-scene>
+  
+
+  <script>
+
+   
+
+  
+    const sky = document.querySelector('#sky');
+    const audio = document.querySelector('#audio');
+    const rightHand = document.querySelector('#rightHand');
+    const backgroundNumber = document.querySelector('#backgroundNumber');
+
+    let currentBackground = 1;
+    const totalBackgrounds = 18; // esta parte es actualizable, este número representa al total de imágenes de fondo que tienes
+    rightHand.addEventListener('abuttondown', () => {
+      currentBackground = (currentBackground % totalBackgrounds) + 1;
+      sky.emit('changeBackground');
+      audio.emit('changeMusic');
+      backgroundNumber.setAttribute('text', `value: ${currentBackground}`);
+      document.querySelector('#backgroundName').setAttribute('text', `value: Fondo ${currentBackground}`);
+      document.querySelector('#musicName').setAttribute('text', `value: Música ${currentBackground}`);
+
+    });
+    //PARTE PARE CONTROLAR EL PLAY Y PAUSE DE LA MUSICA
+
+    //boton para pausar la musica y reaanudarla
+    const leftHand = document.querySelector('#leftHand');
+    //caja azul para mostrar cuando se pausa, en este caso no lo uso
+    //const pauseButton = document.querySelector('#pauseButton');
+    let isPaused = false;
+    //evento que se acciona cuando pulsas la X del mando
+    leftHand.addEventListener('xbuttondown', () => {
+      isPaused = !isPaused;
+      if (isPaused) {
+        audio.setAttribute('sound', 'volume: 0');
+        //  pauseButton.setAttribute('color', 'red');
+      } else {
+        audio.setAttribute('sound', 'volume: 1');
+        //  pauseButton.setAttribute('color', 'blue');
+      }
+    });
+    //evento para cambiar el fondo
+    sky.addEventListener('changeBackground', () => {
+      sky.setAttribute('animation__fadeout', 'property: material.opacity; from: 1; to: 0; dur: 500; easing: linear');
+      setTimeout(() => {
+        sky.setAttribute('src', `#bg${currentBackground}`);
+        sky.setAttribute('animation__fadein', 'property: material.opacity; from: 0; to: 1; dur: 500; easing: linear');
+      }, 500);
+      startAutoChange();
+    });
+    //evento para cambiar la musica
+    audio.addEventListener('changeMusic', () => {
+      audio.setAttribute('sound', 'volume: 0');
+      setTimeout(() => {
+        audio.setAttribute('sound', `src: #music${currentBackground}; autoplay: true; loop: true`);
+        audio.setAttribute('sound', 'volume: 1');
+      }, 500);
+      startAutoChange();
+    });
+
+    const scene = document.querySelector('#scene');
+
+    scene.addEventListener('enter-vr', () => {
+      sky.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 100000; loop: true; easing: linear');
+    });
+
+    scene.addEventListener('exit-vr', () => {
+      sky.setAttribute('animation', 'property: rotation; to: 0 360 0; dur: 100000; loop: true; easing: linear');
+    });
+
+    // Función para cambiar de fondo
+    function changeBackground() {
+      currentBackground = (currentBackground % totalBackgrounds) + 1;
+      sky.setAttribute('src', `#bg${currentBackground}`);
+      backgroundNumber.setAttribute('text', `value: ${currentBackground}`);
+      document.querySelector('#backgroundName').setAttribute('text', `value: Fondo ${currentBackground}`);
+      document.querySelector('#musicName').setAttribute('text', `value: Música ${currentBackground}`);
+    }
+
+    // Evento de teclado para simular la tecla "A" del mando Oculus Quest 2
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'c' || event.key === 'A') {
+        changeBackground();
+      }
+    });
+    let autoChangeTimeout = null;
+
+    function startAutoChange() {
+      clearTimeout(autoChangeTimeout);
+      autoChangeTimeout = setTimeout(() => {
+        changeBackground();
+        sky.emit('changeBackground');
+        audio.emit('changeMusic');
+      }, 50000); // Cambiar cada 30 segundos
+    }
+
+    startAutoChange();
+
+  </script>
+</body>
+
+</html>
